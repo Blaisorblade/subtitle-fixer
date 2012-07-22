@@ -29,8 +29,8 @@ object FixSubtitles extends App with Logging {
   import Secs._
 
   implicit val parser = new OptionParser[Config]("subtitle-fixer", "0.1") { def options = Seq(
-    intOpt("d", "deltaMs", "how much earlier than they should do subtitles" +
-      " appear (that is, time interval to add to subtitles timestamp); can be" +
+    intOpt("d", "deltaMs", "how earlier than they should do subtitles" +
+      " appear? That is, time interval to add to subtitles timestamp. It can be" +
       " negative") { (v, c) => c.copy(deltaMs = v) },
     doubleOpt("o", "origFps", "framerate the original subtitle is for; only" +
       " needed for framerate conversion") {(v, c) => c.copy(origFps = Some(v))},
