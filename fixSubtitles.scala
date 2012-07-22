@@ -26,9 +26,6 @@ object FixSubtitles extends App {
   ) }
   parser.parse(args, Config()) map { config =>
     import config._
-  } getOrElse {
-      // arguments are bad, usage message will have been displayed
-  }
 //    //Config - add cmdline opt parser!
 //    val deltaMs = 0 //(-10 sec) - 700
 //    //This is useful to convert subs for e.g. 25FPS to subs for e.g. 23.976FPS.
@@ -83,5 +80,8 @@ object FixSubtitles extends App {
 
   for (line <- input.getLines()) {
     println(fixedLine(line))
+  }
+  } getOrElse {
+      // arguments are bad, usage message will have been displayed
   }
 }
