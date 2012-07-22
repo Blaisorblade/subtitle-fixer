@@ -16,14 +16,18 @@ object FixSubtitles extends App {
   import Secs._
 
   val parser = new scopt.immutable.OptionParser[Config]("subtitle-fixer", "0.1") { def options = Seq(
-    intOpt("d", "deltaMs", "how much earlier than they should do subtitles " +
-      "appear (that is, time interval to add to subtitles timestamp); can be " +
-      "negative") { (v, c) => c.copy(deltaMs = v) },
-    doubleOpt("o", "origFps", "") {(v, c) => c.copy(origFps = Some(v))},
+    intOpt("d", "deltaMs", "how much earlier than they should do subtitles" +
+      " appear (that is, time interval to add to subtitles timestamp); can be" +
+      " negative") { (v, c) => c.copy(deltaMs = v) },
+    doubleOpt("o", "origFps", "framerate the original subtitle is for; only" +
+      " needed for framerate conversion") {(v, c) => c.copy(origFps = Some(v))},
     doubleOpt("t", "targetFps", "") {(v, c) => c.copy(targetFps = Some(v))},
-    arg("<inputfile>", "<inputfile> is an argument") {(v, c) =>
-      c.copy(inputFile = Some(v)) }
-  ) }
+    argOpt("<input subtitle>", "(std. input if not specified)") {(v, c) =>
+      c.copy(inputFile = Some(v))},
+    argOpt("<output subtitle>", "(same as <input file> if not specified; if both" +
+      " are not specified, then the std. output)") {(v, c) =>
+      c.copy(outputFile = Some(v))}
+  )}
   parser.parse(args, Config()) map { config =>
     import config._
 //    //Config - add cmdline opt parser!
