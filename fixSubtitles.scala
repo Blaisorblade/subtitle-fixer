@@ -23,7 +23,7 @@ object FixSubtitles extends App {
     //Source.fromFile(fName)
     Source.stdin
 
-  def parse(time: String) = {
+  def parse(time: String): Int = {
     val Time = "(..):(..):(..),(...)".r
     time match {
       case Time(h, m, s, ms) => ((((h.toInt * 60) + m.toInt) * 60) + s.toInt) * 1000 + ms.toInt
@@ -44,8 +44,8 @@ object FixSubtitles extends App {
     (h, m, s, ms)
   }
 
-  def adjust(timeMs: Int) =
-    timeMs * timeMultiplier + deltaMs
+  def adjust(timeMs: Int): Int =
+    (timeMs * timeMultiplier).toInt + deltaMs
 
   def fixedLine(line: String) = {
     val TimeLine = "(.*)-->(.*)".r
