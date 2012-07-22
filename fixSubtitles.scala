@@ -1,5 +1,6 @@
 import io.Source
-import java.io.{BufferedOutputStream, PrintOutputStream, FileOutputStream, File}
+import java.io.{BufferedWriter, PrintWriter, FileWriter, File,
+  OutputStreamWriter}
 import scopt.immutable.OptionParser
 
 object Secs {
@@ -115,11 +116,11 @@ object FixSubtitles extends App with Logging {
       case Some(fName) =>
         val f = new File(fName)
         if (f.exists)
-          new PrintOutputStream(new BufferedOutputStream(new FileOutputStream(fName)))
+          new PrintWriter(new BufferedWriter(new FileWriter(fName)))
         else
           error("input file not found!")
       case _ =>
-        new PrintOutputStream(new OutputStreamOutputStream(Console.out))
+        new PrintWriter(new OutputStreamWriter(Console.out))
     }
 
     for (line <- outputSub) {
