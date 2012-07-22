@@ -15,7 +15,7 @@ case class Config(deltaMs: Int = 0, origFps: Option[Double] = None,
 object FixSubtitles extends App {
   import Secs._
 
-  val parser = new scopt.immutable.OptionParser[Config]("scopt", "2.x") { def options = Seq(
+  val parser = new scopt.immutable.OptionParser[Config]("subtitle-fixer", "0.1") { def options = Seq(
     intOpt("d", "deltaMs", "how much earlier than they should do subtitles " +
       "appear (that is, time interval to add to subtitles timestamp); can be " +
       "negative") { (v, c) => c.copy(deltaMs = v) },
