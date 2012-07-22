@@ -76,6 +76,7 @@ object FixSubtitles extends App with Logging {
       val Time = "(..):(..):(..),(...)".r
       time match {
         case Time(h, m, s, ms) => ((((h.toInt * 60) + m.toInt) * 60) + s.toInt) * 1000 + ms.toInt
+        case _ => throw new RuntimeException("Couldn't parse: \"%s\"" format time)
       }
     }
 
@@ -107,7 +108,9 @@ object FixSubtitles extends App with Logging {
       }
     }
 
-    val outputSub = for (line <- input.getLines()) yield fixedLine(line)
+    //Must convert the iterator to a list, to force it!
+    val outputSub: List[String] = (for (line <- input.getLines()) yield
+      fixedLine(line)).toList
 
     val output = outputFile orElse inputFile match {
       case Some(fName) =>
@@ -123,6 +126,7 @@ object FixSubtitles extends App with Logging {
     for (line <- outputSub) {
       output.println(line)
     }
+    output.close()
   } getOrElse {
       // arguments are bad, usage message will have been displayed
   }
