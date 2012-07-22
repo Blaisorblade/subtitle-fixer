@@ -42,7 +42,6 @@ object FixSubtitles extends App {
       case _ => 1
     }
 
-    //val fName = "David+Lynch+-+Twin+Peaks+-+Fire+Walk+With+Me+%281992%29 - orig.srt"
     def input =
       //Source.fromFile(fName)
       Source.stdin
