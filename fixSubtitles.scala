@@ -58,7 +58,7 @@ object FixSubtitles extends App {
     }
   }
 
-  for (line <- source.getLines()) {
+  for (line <- input.getLines()) {
     println(fixedLine(line))
   }
 }
