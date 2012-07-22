@@ -1,6 +1,6 @@
-import io.Source
+import io.{Source, Codec}
 import java.io.{BufferedWriter, PrintWriter, FileWriter, File,
-  OutputStreamWriter}
+  OutputStreamWriter, FileOutputStream}
 import scopt.immutable.OptionParser
 
 object Secs {
@@ -67,7 +67,7 @@ object FixSubtitles extends App with Logging {
     val input =
       inputFile match {
         case Some(fName) =>
-          Source.fromFile(fName)
+          Source.fromFile(fName)(Codec.ISO8859)
         case _ =>
           Source.stdin
       }
@@ -116,7 +116,8 @@ object FixSubtitles extends App with Logging {
       case Some(fName) =>
         val f = new File(fName)
         if (f.exists)
-          new PrintWriter(new BufferedWriter(new FileWriter(fName)))
+          new PrintWriter(new BufferedWriter(new OutputStreamWriter(new
+            FileOutputStream(fName), "ISO-8859-1")))
         else
           error("input file not found!")
       case _ =>
