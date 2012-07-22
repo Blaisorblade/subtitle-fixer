@@ -1,4 +1,6 @@
 import io.Source
+import java.io.{BufferedWriter, PrintWriter, FileWriter, File,
+  OutputStreamWriter}
 
 object Secs {
   //XXX just for fun
@@ -8,11 +10,20 @@ object Secs {
   implicit def toSecOps(x: Int): SecOps = new SecOps(x)
 }
 
+trait Logging {
+  def warn(msg: Any) = Console.err.println("Warning: " + msg)
+  def error(msg: Any): Nothing = {
+    Console.err.println("Error: " + msg)
+    System.exit(1)
+    throw new Throwable //Just to get the Nothing return type.
+  }
+}
+
 case class Config(deltaMs: Int = 0, origFps: Option[Double] = None,
   targetFps: Option[Double] = None,
   inputFile: Option[String] = None, outputFile: Option[String] = None)
 
-object FixSubtitles extends App {
+object FixSubtitles extends App with Logging {
   import Secs._
 
   val parser = new scopt.immutable.OptionParser[Config]("subtitle-fixer", "0.1") { def options = Seq(
@@ -39,12 +50,25 @@ object FixSubtitles extends App {
     val timeMultiplier = (origFps, targetFps) match {
       case (Some(orig), Some(target)) =>
         orig / target //? Or the inverse?
-      case _ => 1
+      case otherwise =>
+        otherwise match {
+          case (None, None) =>
+            //Omitting both is allowed, do nothing.
+          case _ =>
+            error("origFps and targetFps must be specified together")
+        }
+        if (deltaMs == 0)
+          error("no change specified")
+        1
     }
 
-    def input =
-      //Source.fromFile(fName)
-      Source.stdin
+    val input =
+      inputFile match {
+        case Some(fName) =>
+          Source.fromFile(fName)
+        case _ =>
+          Source.stdin
+      }
 
     def parse(time: String): Int = {
       val Time = "(..):(..):(..),(...)".r
@@ -81,8 +105,21 @@ object FixSubtitles extends App {
       }
     }
 
-    for (line <- input.getLines()) {
-      println(fixedLine(line))
+    val outputSub = for (line <- input.getLines()) yield fixedLine(line)
+
+    val output = outputFile orElse inputFile match {
+      case Some(fName) =>
+        val f = new File(fName)
+        if (f.exists)
+          new PrintWriter(new BufferedWriter(new FileWriter(fName)))
+        else
+          error("input file not found!")
+      case _ =>
+        new PrintWriter(new OutputStreamWriter(Console.out))
+    }
+
+    for (line <- outputSub) {
+      output.println(line)
     }
   } getOrElse {
       // arguments are bad, usage message will have been displayed
