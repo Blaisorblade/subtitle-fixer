@@ -1,6 +1,7 @@
 import io.Source
 import java.io.{BufferedWriter, PrintWriter, FileWriter, File,
   OutputStreamWriter}
+import scopt.immutable.OptionParser
 
 object Secs {
   //XXX just for fun
@@ -12,8 +13,9 @@ object Secs {
 
 trait Logging {
   def warn(msg: Any) = Console.err.println("Warning: " + msg)
-  def error(msg: Any): Nothing = {
+  def error(msg: Any)(implicit parser: OptionParser[_]): Nothing = {
     Console.err.println("Error: " + msg)
+    Console.err.println(parser.usage)
     System.exit(1)
     throw new Throwable //Just to get the Nothing return type.
   }
@@ -26,7 +28,7 @@ case class Config(deltaMs: Int = 0, origFps: Option[Double] = None,
 object FixSubtitles extends App with Logging {
   import Secs._
 
-  val parser = new scopt.immutable.OptionParser[Config]("subtitle-fixer", "0.1") { def options = Seq(
+  implicit val parser = new OptionParser[Config]("subtitle-fixer", "0.1") { def options = Seq(
     intOpt("d", "deltaMs", "how much earlier than they should do subtitles" +
       " appear (that is, time interval to add to subtitles timestamp); can be" +
       " negative") { (v, c) => c.copy(deltaMs = v) },
