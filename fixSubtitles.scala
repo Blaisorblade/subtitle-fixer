@@ -115,11 +115,16 @@ object FixSubtitles extends App with Logging {
     val output = outputFile orElse inputFile match {
       case Some(fName) =>
         val f = new File(fName)
-        if (f.exists)
+        try {
           new PrintWriter(new BufferedWriter(new OutputStreamWriter(new
-            FileOutputStream(fName), "ISO-8859-1")))
-        else
-          error("input file not found!")
+            FileOutputStream(f), "ISO-8859-1")))
+        } catch {
+          case ioe: java.io.IOException =>
+            Console.err.println("Could not open output file!")
+            ioe.printStackTrace()
+            error("Could not open output file!")
+            //error("input file not found! Name: " + fName + ", file: " + f)
+        }
       case _ =>
         new PrintWriter(new OutputStreamWriter(Console.out))
     }
