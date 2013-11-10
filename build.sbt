@@ -2,7 +2,7 @@ import com.typesafe.sbt.SbtStartScript
 
 name := "subtitle-fixer"
 
-scalaVersion := "2.9.2"
+scalaVersion := "2.10.3"
 
 libraryDependencies += "com.github.scopt" %% "scopt" % "2.1.0"
 
