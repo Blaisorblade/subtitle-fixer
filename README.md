@@ -3,7 +3,7 @@ subtitle-fixer
 
 Adjust subtitle for offset and framerate.
 
-Compile with SBT (>= 0.12.0) by running
+Compile with SBT (>= 0.13.0) by running
 
 ```
 sbt stage
