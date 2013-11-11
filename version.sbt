@@ -1,3 +1,3 @@
-git.baseVersion := "0.1"
+seq(versionWithGit: _*)
 
-versionWithGit
+git.baseVersion := "0.1"
