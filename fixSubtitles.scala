@@ -104,9 +104,7 @@ object FixSubtitles extends App with Logging {
             FileOutputStream(f), "ISO-8859-1")))
         } catch {
           case ioe: java.io.IOException =>
-            Console.err.println("Could not open output file!")
-            ioe.printStackTrace()
-            error("Could not open output file!")
+            error("Could not open output file! Error: " + ioe)
             //error("input file not found! Name: " + fName + ", file: " + f)
         }
       case _ =>
