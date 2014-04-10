@@ -92,9 +92,8 @@ object FixSubtitles extends App with Logging {
       }
     }
 
-    //Must convert the iterator to a list, to force it!
-    val outputSub: List[String] = (for (line <- input.getLines()) yield
-      fixedLine(line)).toList
+    val outputSub = (for (line <- input.getLines()) yield
+      fixedLine(line))
 
     val output = outputFile orElse inputFile match {
       case Some(fName) =>
