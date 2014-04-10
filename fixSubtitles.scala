@@ -96,18 +96,17 @@ object FixSubtitles extends App with Logging {
     def adjust(timeMs: Int): Int =
       (timeMs * timeMultiplier).toInt + deltaMs
 
-    def fixedLine(line: String) = {
-      val TimeLine = "(.*)-->(.*)".r
+    def fixedTimestampLine(inpDate: String) = printDate(split(adjust(parse(inpDate.trim))))
 
-      def fixedTimestampLine(inpDate: String) = printDate(split(adjust(parse(inpDate.trim))))
-      line match {
+    val TimeLine = "(.*)-->(.*)".r
+
+    for (line <- input.getLines()) {
+      output.println(line match {
         case TimeLine(start, end) =>
           "%s --> %s" format (fixedTimestampLine(start), fixedTimestampLine(end))
         case _ => line
-      }
+      })
     }
-    for (line <- input.getLines())
-      output.println(fixedLine(line))
     output.close()
   } getOrElse {
       // arguments are bad, usage message will have been displayed
