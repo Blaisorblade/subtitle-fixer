@@ -92,9 +92,6 @@ object FixSubtitles extends App with Logging {
       }
     }
 
-    val outputSub = (for (line <- input.getLines()) yield
-      fixedLine(line))
-
     val output = outputFile orElse inputFile match {
       case Some(fName) =>
         val f = new File(fName)
@@ -110,9 +107,8 @@ object FixSubtitles extends App with Logging {
         new PrintWriter(new OutputStreamWriter(Console.out))
     }
 
-    for (line <- outputSub) {
-      output.println(line)
-    }
+    for (line <- input.getLines())
+      output.println(fixedLine(line))
     output.close()
   } getOrElse {
       // arguments are bad, usage message will have been displayed
