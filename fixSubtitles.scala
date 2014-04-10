@@ -84,9 +84,8 @@ object FixSubtitles extends App with Logging {
       "%02d:%02d:%02d,%03d" format (h, m, s, ms)
     }
 
-    def split(cumTimeMs: Int) = {
+    def split(cumMs: Int) = {
       def divMod(quot: Int, div: Int) = (quot / div, quot % div)
-      val cumMs = cumTimeMs
       val (cumS, ms) = divMod(cumMs, 1000)
       val (cumM, s) = divMod(cumS, 60)
       val (h, m) = divMod(cumM, 60)
