@@ -103,7 +103,7 @@ object FixSubtitles extends App with Logging {
     for (line <- input.getLines()) {
       output.println(line match {
         case TimeLine(start, end) =>
-          "%s --> %s" format (fixedTimestampLine(start), fixedTimestampLine(end))
+          s"${fixedTimestampLine(start)} --> ${fixedTimestampLine(end)}"
         case _ => line
       })
     }
