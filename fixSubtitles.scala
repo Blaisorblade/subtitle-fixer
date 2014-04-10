@@ -3,14 +3,6 @@ import java.io.{BufferedWriter, PrintWriter, FileWriter, File,
   OutputStreamWriter, FileOutputStream}
 import scopt.immutable.OptionParser
 
-object Secs {
-  //XXX just for fun
-  class SecOps(x: Int) {
-    def sec = x * 1000
-  }
-  implicit def toSecOps(x: Int): SecOps = new SecOps(x)
-}
-
 trait Logging {
   def warn(msg: Any) = Console.err.println("Warning: " + msg)
   def error(msg: Any)(implicit parser: OptionParser[_]): Nothing = {
@@ -26,8 +18,6 @@ case class Config(deltaMs: Int = 0, origFps: Option[Double] = None,
   inputFile: Option[String] = None, outputFile: Option[String] = None)
 
 object FixSubtitles extends App with Logging {
-  import Secs._
-
   implicit val parser = new OptionParser[Config]("subtitle-fixer", "0.1") { def options = Seq(
     intOpt("d", "deltaMs", "how later than they do should subtitles" +
       " appear? That is, time interval to add to subtitles timestamp. It can be" +
@@ -43,12 +33,6 @@ object FixSubtitles extends App with Logging {
   )}
   parser.parse(args, Config()) map { config =>
     import config._
-//    //Config - add cmdline opt parser!
-//    val deltaMs = 0 //(-10 sec) - 700
-//    //This is useful to convert subs for e.g. 25FPS to subs for e.g. 23.976FPS.
-//    val origFps = 25.0
-//    val targetFps = 23.976
-//    val timeMultiplier = 1 //origFps / targetFps //? Or the inverse?
     val timeMultiplier = (origFps, targetFps) match {
       case (Some(orig), Some(target)) =>
         orig / target //? Or the inverse?
