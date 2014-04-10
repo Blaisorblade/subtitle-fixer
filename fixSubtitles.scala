@@ -56,6 +56,21 @@ object FixSubtitles extends App with Logging {
           Source.stdin
       }
 
+    val output = new PrintWriter(outputFile orElse inputFile match {
+      case Some(fName) =>
+        val f = new File(fName)
+        try {
+          new BufferedWriter(new OutputStreamWriter(new
+            FileOutputStream(f), "ISO-8859-1"))
+        } catch {
+          case ioe: java.io.IOException =>
+            error("Could not open output file! Error: " + ioe)
+            //error("input file not found! Name: " + fName + ", file: " + f)
+        }
+      case _ =>
+        new OutputStreamWriter(Console.out)
+    })
+
     def parse(time: String): Int = {
       val Time = "(..):(..):(..),(...)".r
       time match {
@@ -91,22 +106,6 @@ object FixSubtitles extends App with Logging {
         case _ => line
       }
     }
-
-    val output = new PrintWriter(outputFile orElse inputFile match {
-      case Some(fName) =>
-        val f = new File(fName)
-        try {
-          new BufferedWriter(new OutputStreamWriter(new
-            FileOutputStream(f), "ISO-8859-1"))
-        } catch {
-          case ioe: java.io.IOException =>
-            error("Could not open output file! Error: " + ioe)
-            //error("input file not found! Name: " + fName + ", file: " + f)
-        }
-      case _ =>
-        new OutputStreamWriter(Console.out)
-    })
-
     for (line <- input.getLines())
       output.println(fixedLine(line))
     output.close()
