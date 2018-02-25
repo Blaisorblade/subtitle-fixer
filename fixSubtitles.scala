@@ -1,11 +1,10 @@
 import io.{Source, Codec}
 import java.io.{BufferedWriter, PrintWriter, FileWriter, File,
   OutputStreamWriter, FileOutputStream}
-import scopt.OptionParser
 
 trait Logging {
   def warn(msg: Any) = Console.err.println("Warning: " + msg)
-  def error(msg: Any)(implicit parser: OptionParser[_]): Nothing = {
+  def error(msg: Any)(implicit parser: scopt.OptionParser[_]): Nothing = {
     Console.err.println("Error: " + msg)
     Console.err.println(parser.usage)
     System.exit(1)
@@ -18,7 +17,7 @@ case class Config(deltaMs: Int = 0, origFps: Option[Double] = None,
   inputFile: Option[String] = None, outputFile: Option[String] = None)
 
 object FixSubtitles extends App with Logging {
-  implicit val parser = new OptionParser[Config]("subtitle-fixer") {
+  implicit val parser = new scopt.OptionParser[Config]("subtitle-fixer") {
     head("subtitle-fixer", "0.1")
     opt[Int]('d', "deltaMs") action { (v, c) => c.copy(deltaMs = v) } text
     ("how later than they do should subtitles" +
