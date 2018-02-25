@@ -27,9 +27,9 @@ object FixSubtitles extends App with Logging {
       ("framerate the original subtitle is for; only" +
          " needed for framerate conversion")
     opt[Double]('t', "targetFps") action {(v, c) => c.copy(targetFps = Some(v))} text("")
-    arg[String]("<input subtitle>") action {(v, c) => c.copy(inputFile = Some(v))} text
+    arg[String]("<input subtitle>") optional() action {(v, c) => c.copy(inputFile = Some(v))} text
       ("(std. input if not specified)")
-    arg[String]("<output subtitle>") action {(v, c) => c.copy(outputFile = Some(v))} text
+    arg[String]("<output subtitle>") optional() action {(v, c) => c.copy(outputFile = Some(v))} text
       ("(same as <input file> if not specified; if both" +
          " are not specified, then the std. output)")
     }
