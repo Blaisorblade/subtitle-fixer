@@ -1,11 +1,10 @@
 import io.{Source, Codec}
 import java.io.{BufferedWriter, PrintWriter, FileWriter, File,
   OutputStreamWriter, FileOutputStream}
-import scopt.immutable.OptionParser
 
 trait Logging {
   def warn(msg: Any) = Console.err.println("Warning: " + msg)
-  def error(msg: Any)(implicit parser: OptionParser[_]): Nothing = {
+  def error(msg: Any)(implicit parser: scopt.OptionParser[_]): Nothing = {
     Console.err.println("Error: " + msg)
     Console.err.println(parser.usage)
     System.exit(1)
@@ -18,19 +17,22 @@ case class Config(deltaMs: Int = 0, origFps: Option[Double] = None,
   inputFile: Option[String] = None, outputFile: Option[String] = None)
 
 object FixSubtitles extends App with Logging {
-  implicit val parser = new OptionParser[Config]("subtitle-fixer", "0.1") { def options = Seq(
-    intOpt("d", "deltaMs", "how later than they do should subtitles" +
-      " appear? That is, time interval to add to subtitles timestamp. It can be" +
-      " negative") { (v, c) => c.copy(deltaMs = v) },
-    doubleOpt("o", "origFps", "framerate the original subtitle is for; only" +
-      " needed for framerate conversion") {(v, c) => c.copy(origFps = Some(v))},
-    doubleOpt("t", "targetFps", "") {(v, c) => c.copy(targetFps = Some(v))},
-    argOpt("<input subtitle>", "(std. input if not specified)") {(v, c) =>
-      c.copy(inputFile = Some(v))},
-    argOpt("<output subtitle>", "(same as <input file> if not specified; if both" +
-      " are not specified, then the std. output)") {(v, c) =>
-      c.copy(outputFile = Some(v))}
-  )}
+  implicit val parser = new scopt.OptionParser[Config]("subtitle-fixer") {
+    head("subtitle-fixer", "0.1")
+    opt[Int]('d', "deltaMs") action { (v, c) => c.copy(deltaMs = v) } text
+    ("how later than they do should subtitles" +
+         " appear? That is, time interval to add to subtitles timestamp. It can be" +
+         " negative")
+    opt[Double]('o', "origFps") action {(v, c) => c.copy(origFps = Some(v))} text
+      ("framerate the original subtitle is for; only" +
+         " needed for framerate conversion")
+    opt[Double]('t', "targetFps") action {(v, c) => c.copy(targetFps = Some(v))} text("")
+    arg[String]("<input subtitle>") optional() action {(v, c) => c.copy(inputFile = Some(v))} text
+      ("(std. input if not specified)")
+    arg[String]("<output subtitle>") optional() action {(v, c) => c.copy(outputFile = Some(v))} text
+      ("(same as <input file> if not specified; if both" +
+         " are not specified, then the std. output)")
+    }
   parser.parse(args, Config()) map { config =>
     import config._
     val timeMultiplier = (origFps, targetFps) match {
